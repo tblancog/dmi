@@ -1,11 +1,7 @@
-import {
-  apiError,
-  checkTempOver,
-  getApiWeatherByCity,
-  convertKelvinToCelsius,
-} from "../helpers";
+import { apiError, checkTempOver, convertKelvinToCelsius } from "../helpers";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { ICityWeather, IQuerystring, IWeatherCheck } from "../types";
+import { getApiWeatherByCity } from "../services/";
 
 /**
  * It receives a request and a reply, then it gets the temperature in celsius degrees from the
