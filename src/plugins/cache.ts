@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyReply } from "fastify";
 import { slugify } from "../helpers";
 
 const fastifyPlugin = require("fastify-plugin");
@@ -12,9 +12,8 @@ async function cache(fastify: FastifyInstance) {
     console.log("CACHE KEY EXPIRED = ", key);
   });
 
-  fastify.addHook("onRequest", async (request: any, reply) => {
+  fastify.addHook("onRequest", async (request: any, reply: FastifyReply) => {
     console.log("Request URL", request.url);
-    console.log("Request Method", request.method);
 
     let key = request.query.city;
     if (request.routerPath === "/weather/check") {
@@ -32,19 +31,22 @@ async function cache(fastify: FastifyInstance) {
     }
   });
 
-  fastify.addHook("onSend", (request: any, reply, payload, done) => {
-    let key = request.query.city;
-    if (request.routerPath === "/weather/check") {
-      key += "-check";
+  fastify.addHook(
+    "onSend",
+    (request: any, reply: FastifyReply, payload, done) => {
+      let key = request.query.city;
+      if (request.routerPath === "/weather/check") {
+        key += "-check";
+      }
+      key = slugify(key);
+      const response = cache.get(key);
+      if (response == undefined) {
+        console.log("CACHING RESPONSE FOR KEY =", key, " AND VALUE =", payload);
+        cache.set(key, payload, CACHE_TTL);
+      }
+      done();
     }
-    key = slugify(key);
-    const response = cache.get(key);
-    if (response == undefined) {
-      console.log("CACHING RESPONSE FOR KEY =", key, " AND VALUE =", payload);
-      cache.set(key, payload, CACHE_TTL);
-    }
-    done();
-  });
+  );
 }
 
 export default fastifyPlugin(cache);
