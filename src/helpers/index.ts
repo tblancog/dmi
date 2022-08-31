@@ -1,4 +1,5 @@
 import {
+  APP_ID,
   KELVIN_CELSIUS_COMPARISON,
   TEMP_OVER_COMPARISON,
   WEATHER_API_URL,
@@ -9,19 +10,17 @@ import { ICityWeather } from "../types";
 /**
  * Does an external request to the weather api to determine the temperature for the given city
  * with the city name and temperature
- * @param {string} appid - The API key that you get from the OpenWeatherMap website.
  * @param {string} city - The city name to get the weather for.
  * @returns An object with the name and temperature of the city.
  */
 export const getApiWeatherByCity = async (
-  appid: string,
   city: string
 ): Promise<ICityWeather> => {
   const options = {
     method: "GET",
     url: WEATHER_API_URL,
     params: {
-      appid,
+      appid: APP_ID,
       q: city,
       limit: "1",
     },
@@ -47,7 +46,6 @@ export const getApiWeatherByCity = async (
  */
 export const checkTempOver = (temp: number): boolean =>
   temp > TEMP_OVER_COMPARISON;
-exports.checkTempOver = checkTempOver;
 
 /**
  * It takes a string and returns an Error object with the string as the message

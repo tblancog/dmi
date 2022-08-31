@@ -20,8 +20,8 @@ export const checkWeatherByCity = async (
   reply: FastifyReply
 ): Promise<IWeatherCheck> => {
   try {
-    const { appid, city } = request.query as IQuerystring;
-    const { temp: kelvinDegrees } = await getApiWeatherByCity(appid, city);
+    const { city } = request.query as IQuerystring;
+    const { temp: kelvinDegrees } = await getApiWeatherByCity(city);
     const celsiusDegrees = Math.floor(convertKelvinToCelsius(kelvinDegrees));
     return reply.send({ result: checkTempOver(celsiusDegrees) });
   } catch (error) {
@@ -46,11 +46,8 @@ export const getWeatherByCity = async (
   reply: FastifyReply
 ): Promise<ICityWeather> => {
   try {
-    const { appid, city } = request.query as IQuerystring;
-    const { name, temp: kelvinDegrees } = await getApiWeatherByCity(
-      appid,
-      city
-    );
+    const { city } = request.query as IQuerystring;
+    const { name, temp: kelvinDegrees } = await getApiWeatherByCity(city);
     const celsiusDegrees = Math.floor(convertKelvinToCelsius(kelvinDegrees));
     return reply.send({ name: name, temp: celsiusDegrees });
   } catch (error) {

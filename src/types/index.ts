@@ -4,7 +4,6 @@ export interface ICityWeather {
 }
 
 export interface IQuerystring {
-  appid: string;
   city: string;
 }
 
