@@ -3,21 +3,26 @@ import { APP_ID, WEATHER_API_URL } from "../config";
 import { ICityWeather } from "../types";
 
 /**
- * Does an external request to the weather api to determine the temperature for the given city
- * with the city name and temperature
- * @param {string} city - The city name to get the weather for.
- * @returns An object with the name and temperature of the city.
+ *  * Does an external request to the weather api to determine the temperature for the given latitude and longitude
+ * @param {number} lat - number,
+ * @param {number} lon - longitude
+ * @returns A promise that resolves to an object with the following shape:
+ * {
+ *   name: string;
+ *   temp: number;
+ * }
  */
-export const getApiWeatherByCity = async (
-  city: string
+export const getApiWeatherByLatLon = async (
+  lat: number,
+  lon: number
 ): Promise<ICityWeather> => {
   const options = {
     method: "GET",
     url: WEATHER_API_URL,
     params: {
       appid: APP_ID,
-      q: city,
-      limit: "1",
+      lat,
+      lon,
     },
   };
   try {

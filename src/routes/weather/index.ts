@@ -1,23 +1,25 @@
 import { FastifyInstance } from "fastify";
-import { checkWeatherByCity, getWeatherByCity } from "../../controllers";
-import { WeatherCheck, Weather } from "../../schemas";
+import { checkWeatherByLatLong, getWeatherByLatLon } from "../../controllers";
+import { WeatherCheck, Weather, WeatherQueryString } from "../../schemas";
 
 const getWeatherCheckOpts = {
   schema: {
+    querystring: WeatherQueryString,
     response: {
       200: WeatherCheck,
     },
   },
-  handler: checkWeatherByCity,
+  handler: checkWeatherByLatLong,
 };
 /* Options for Weather */
 const getWeatherOpts = {
   schema: {
+    querystring: WeatherQueryString,
     response: {
       200: Weather,
     },
   },
-  handler: getWeatherByCity,
+  handler: getWeatherByLatLon,
 };
 /**
  * Defines weather routes for weather check

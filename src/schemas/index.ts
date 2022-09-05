@@ -12,3 +12,19 @@ export const WeatherCheck = {
     result: { type: "boolean" },
   },
 };
+
+export const ApiWeatherParams = {
+  type: "object",
+  properties: {
+    lat: { type: "string" },
+    lon: { type: "string" },
+  },
+};
+
+export const WeatherQueryString = {
+  type: "object",
+  properties: {
+    lat: { type: "number" },
+    lon: { type: "number" },
+  },
+};

@@ -5,9 +5,9 @@ import * as weatherService from "../../src/services";
 
 test("/weather/check returns json and 200 statusCode", async (t: Test) => {
   const fastify = await build(t);
-  const stubGetApiWeatherByCity = ImportMock.mockFunction(
+  const stubGetApiWeatherByLatLon = ImportMock.mockFunction(
     weatherService,
-    "getApiWeatherByCity",
+    "getApiWeatherByLatLon",
     {
       name: "Some City",
       temp: 285, //285 kelvin degrees,
@@ -15,11 +15,11 @@ test("/weather/check returns json and 200 statusCode", async (t: Test) => {
   );
   t.teardown(() => {
     fastify.close();
-    stubGetApiWeatherByCity.restore();
+    stubGetApiWeatherByLatLon.restore();
   });
   const response = await fastify.inject({
     method: "GET",
-    url: "/weather/check?city=SomeCity",
+    url: "/weather/check?lat=0&lon=0",
   });
   t.equal(response.statusCode, 200);
   t.equal(response.headers["content-type"], "application/json; charset=utf-8");
@@ -27,9 +27,9 @@ test("/weather/check returns json and 200 statusCode", async (t: Test) => {
 
 test("/weather/check returns 500 statusCode", async (t: Test) => {
   const fastify = await build(t);
-  const stubGetApiWeatherByCity = ImportMock.mockFunction(
+  const stubGetApiWeatherByLatLon = ImportMock.mockFunction(
     weatherService,
-    "getApiWeatherByCity",
+    "getApiWeatherByLatLon",
     {
       name: "Some City",
       temp: 300, //300 kelvin degrees,
@@ -37,20 +37,20 @@ test("/weather/check returns 500 statusCode", async (t: Test) => {
   );
   t.teardown(() => {
     fastify.close();
-    stubGetApiWeatherByCity.restore();
+    stubGetApiWeatherByLatLon.restore();
   });
   const response = await fastify.inject({
     method: "GET",
-    url: "/weather/check?city=SomeCity",
+    url: "/weather/check?lat=0&lon=0",
   });
   console.log({ response: response.json() });
 });
 
 test("/weather/check should return { result: false } when temperature is below 15 degrees celsius (288.15)", async (t: Test) => {
   const fastify = await build(t);
-  const stubGetApiWeatherByCity = ImportMock.mockFunction(
+  const stubGetApiWeatherByLatLon = ImportMock.mockFunction(
     weatherService,
-    "getApiWeatherByCity",
+    "getApiWeatherByLatLon",
     {
       name: "Some City",
       temp: 278, //278 kelvin = 5 celsius,
@@ -58,11 +58,11 @@ test("/weather/check should return { result: false } when temperature is below 1
   );
   t.teardown(() => {
     fastify.close();
-    stubGetApiWeatherByCity.restore();
+    stubGetApiWeatherByLatLon.restore();
   });
   const response = await fastify.inject({
     method: "GET",
-    url: "/weather/check?city=SomeCity",
+    url: "/weather/check?lat=0&lon=0",
   });
   t.equal(response.statusCode, 200);
   t.equal(response.headers["content-type"], "application/json; charset=utf-8");
@@ -71,9 +71,9 @@ test("/weather/check should return { result: false } when temperature is below 1
 });
 test("/weather/check should return { result: true } when temperature is above 15 degrees celsius (288.15)", async (t: Test) => {
   const fastify = await build(t);
-  const stubGetApiWeatherByCity = ImportMock.mockFunction(
+  const stubGetApiWeatherByLatLon = ImportMock.mockFunction(
     weatherService,
-    "getApiWeatherByCity",
+    "getApiWeatherByLatLon",
     {
       name: "Some City",
       temp: 290, //290 kelvin = 16 celsius,
@@ -81,11 +81,11 @@ test("/weather/check should return { result: true } when temperature is above 15
   );
   t.teardown(() => {
     fastify.close();
-    stubGetApiWeatherByCity.restore();
+    stubGetApiWeatherByLatLon.restore();
   });
   const response = await fastify.inject({
     method: "GET",
-    url: "/weather/check?city=SomeCity",
+    url: "/weather/check?lat=0&lon=0",
   });
   t.equal(response.statusCode, 200);
   t.equal(response.headers["content-type"], "application/json; charset=utf-8");

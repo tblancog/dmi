@@ -4,7 +4,8 @@ export interface ICityWeather {
 }
 
 export interface IQuerystring {
-  city: string;
+  lat: number;
+  lon: number;
 }
 
 export interface IWeatherCheck {

@@ -1,7 +1,7 @@
 import { apiError, checkTempOver, convertKelvinToCelsius } from "../helpers";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { ICityWeather, IQuerystring, IWeatherCheck } from "../types";
-import { getApiWeatherByCity } from "../services/";
+import { getApiWeatherByLatLon } from "../services/";
 
 /**
  * It receives a request and a reply, then it gets the temperature in celsius degrees from the
@@ -11,14 +11,15 @@ import { getApiWeatherByCity } from "../services/";
  * response back to the client.
  * @returns An IWeatherCheck object representing whether if the temperature is above or below TEMP_OVER_COMPARISON
  */
-export const checkWeatherByCity = async (
+export const checkWeatherByLatLong = async (
   request: FastifyRequest,
   reply: FastifyReply
 ): Promise<IWeatherCheck> => {
   try {
-    const { city } = request.query as IQuerystring;
-    const { temp: kelvinDegrees } = await getApiWeatherByCity(city);
+    const { lat, lon } = request.query as IQuerystring;
+    const { temp: kelvinDegrees } = await getApiWeatherByLatLon(lat, lon);
     const celsiusDegrees = Math.floor(convertKelvinToCelsius(kelvinDegrees));
+    console.log(checkTempOver(celsiusDegrees));
     return reply.send({ result: checkTempOver(celsiusDegrees) });
   } catch (error) {
     if (error instanceof Error) {
@@ -35,21 +36,23 @@ export const checkWeatherByCity = async (
  * to the handler.
  * @param {FastifyReply} reply - FastifyReply - This is the reply object that will be used to send the
  * response back to the client.
- * @returns A ICityWeather object with the resulting temperature for city.
+ * @returns A function that returns a promise that resolves to an ICityWeather object.
  */
-export const getWeatherByCity = async (
+export const getWeatherByLatLon = async (
   request: FastifyRequest,
   reply: FastifyReply
 ): Promise<ICityWeather> => {
   try {
-    const { city } = request.query as IQuerystring;
-    const { name, temp: kelvinDegrees } = await getApiWeatherByCity(city);
+    const { lat, lon } = request.query as IQuerystring;
+    const { name, temp: kelvinDegrees } = await getApiWeatherByLatLon(lat, lon);
     const celsiusDegrees = Math.floor(convertKelvinToCelsius(kelvinDegrees));
     return reply.send({ name: name, temp: celsiusDegrees });
   } catch (error) {
     if (error instanceof Error) {
       throw apiError(error.message);
     }
-    throw new Error("Unexpected error getting weather by city");
+    throw new Error(
+      "Unexpected error getting weather by latitude and longitude"
+    );
   }
 };
